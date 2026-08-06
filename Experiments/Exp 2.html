@@ -1,92 +1,227 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Billing System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing System</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #eaf2f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f7;
+      margin: 0;
+      padding: 30px;
+    }
 
-        .bill-container {
-            width: 380px;
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            border: 1px solid #444;
-            box-shadow: 0px 5px 15px rgba(0,0,0,0.15);
-        }
+    .container {
+      width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
 
-        h2 {
-            text-align: center;
-            margin-top: 0;
-        }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
 
-        .final {
-            font-size: 20px;
-            font-weight: bold;
-        }
+    .student-info {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
 
-        .student-info {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 20px;
-        }
-    </style>
+    input {
+      padding: 9px;
+      margin: 5px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      width: 27%;
+    }
+
+    button {
+      padding: 9px 15px;
+      background: #3949ab;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #283593;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #3949ab;
+      color: white;
+    }
+
+    .remove-btn {
+      background: #e53935;
+      padding: 5px 8px;
+    }
+
+    .total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
 
+<div class="container">
+
+  <h2>Billing System</h2>
+
+  <div class="student-info">
+    <b>Name:</b> Saksham Chimdyalwar <br>
+    <b>PRN:</b> 24070521151
+  </div>
+
+  <!-- Item Input -->
+
+  <input type="text" id="itemName" placeholder="Item Name">
+
+  <input type="number" id="itemPrice" placeholder="Price">
+
+  <input type="number" id="itemQty" placeholder="Quantity">
+
+  <button onclick="addItem()">Add Item</button>
+
+
+  <!-- Bill Table -->
+
+  <table>
+
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Amount</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+
+    <tbody id="billTable"></tbody>
+
+  </table>
+
+
+  <div class="total">
+    Total Bill: ₹<span id="totalBill">0.00</span>
+  </div>
+
+</div>
+
+
 <script>
 
-    // Taking customer details
-    let customerName = prompt("Enter Customer Name:");
-    let mobileNumber = prompt("Enter Mobile Number:");
+  let items = [];
 
-    // Taking product details
-    let productName = prompt("Enter Product Name:");
-    let quantity = Number(prompt("Enter Product Quantity:"));
-    let unitPrice = Number(prompt("Enter Price per Unit:"));
 
-    // Bill Calculation
-    let totalPrice = quantity * unitPrice;
-    let gstAmount = totalPrice * 0.18;
-    let payableAmount = totalPrice + gstAmount;
+  // Add Item
+  function addItem() {
 
-    // Display Bill
-    document.write("<div class='bill-container'>");
+    let name = document.getElementById("itemName").value;
+    let price = Number(document.getElementById("itemPrice").value);
+    let qty = Number(document.getElementById("itemQty").value);
 
-    document.write("<h2>Customer Bill</h2>");
 
-    document.write("<p><b>Customer Name:</b> " + customerName + "</p>");
-    document.write("<p><b>Mobile Number:</b> " + mobileNumber + "</p>");
+    if (name == "" || price <= 0 || qty <= 0) {
 
-    document.write("<hr>");
+      alert("Please enter valid item details!");
 
-    document.write("<p><b>Product:</b> " + productName + "</p>");
-    document.write("<p><b>Quantity:</b> " + quantity + "</p>");
-    document.write("<p><b>Price per Unit:</b> ₹" + unitPrice + "</p>");
+      return;
+    }
 
-    document.write("<hr>");
 
-    document.write("<p><b>Total:</b> ₹" + totalPrice + "</p>");
-    document.write("<p><b>GST (18%):</b> ₹" + gstAmount.toFixed(2) + "</p>");
+    items.push({
+      name: name,
+      price: price,
+      qty: qty
+    });
 
-    document.write("<p class='final'>Final Amount: ₹" 
-                   + payableAmount.toFixed(2) + "</p>");
 
-    document.write("<div class='student-info'>");
-    document.write("<b>Name:</b> Saksham Chimdyalwar<br>");
-    document.write("<b>PRN:</b> 24070521151");
-    document.write("</div>");
+    // Clear Inputs
+    document.getElementById("itemName").value = "";
+    document.getElementById("itemPrice").value = "";
+    document.getElementById("itemQty").value = "";
 
-    document.write("</div>");
+
+    displayBill();
+  }
+
+
+  // Display Bill
+  function displayBill() {
+
+    let table = document.getElementById("billTable");
+
+    let total = 0;
+
+    table.innerHTML = "";
+
+
+    for (let i = 0; i < items.length; i++) {
+
+      let amount = items[i].price * items[i].qty;
+
+      total = total + amount;
+
+
+      table.innerHTML += `
+        <tr>
+
+          <td>${items[i].name}</td>
+
+          <td>₹${items[i].price.toFixed(2)}</td>
+
+          <td>${items[i].qty}</td>
+
+          <td>₹${amount.toFixed(2)}</td>
+
+          <td>
+            <button class="remove-btn"
+            onclick="removeItem(${i})">X</button>
+          </td>
+
+        </tr>
+      `;
+    }
+
+
+    document.getElementById("totalBill").innerHTML =
+      total.toFixed(2);
+  }
+
+
+  // Remove Item
+  function removeItem(index) {
+
+    items.splice(index, 1);
+
+    displayBill();
+  }
 
 </script>
 
