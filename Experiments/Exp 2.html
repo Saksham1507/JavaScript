@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Billing System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf2f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .bill-container {
+            width: 380px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .final {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .student-info {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<script>
+
+    // Taking customer details
+    let customerName = prompt("Enter Customer Name:");
+    let mobileNumber = prompt("Enter Mobile Number:");
+
+    // Taking product details
+    let productName = prompt("Enter Product Name:");
+    let quantity = Number(prompt("Enter Product Quantity:"));
+    let unitPrice = Number(prompt("Enter Price per Unit:"));
+
+    // Bill Calculation
+    let totalPrice = quantity * unitPrice;
+    let gstAmount = totalPrice * 0.18;
+    let payableAmount = totalPrice + gstAmount;
+
+    // Display Bill
+    document.write("<div class='bill-container'>");
+
+    document.write("<h2>Customer Bill</h2>");
+
+    document.write("<p><b>Customer Name:</b> " + customerName + "</p>");
+    document.write("<p><b>Mobile Number:</b> " + mobileNumber + "</p>");
+
+    document.write("<hr>");
+
+    document.write("<p><b>Product:</b> " + productName + "</p>");
+    document.write("<p><b>Quantity:</b> " + quantity + "</p>");
+    document.write("<p><b>Price per Unit:</b> ₹" + unitPrice + "</p>");
+
+    document.write("<hr>");
+
+    document.write("<p><b>Total:</b> ₹" + totalPrice + "</p>");
+    document.write("<p><b>GST (18%):</b> ₹" + gstAmount.toFixed(2) + "</p>");
+
+    document.write("<p class='final'>Final Amount: ₹" 
+                   + payableAmount.toFixed(2) + "</p>");
+
+    document.write("<div class='student-info'>");
+    document.write("<b>Name:</b> Saksham Chimdyalwar<br>");
+    document.write("<b>PRN:</b> 24070521151");
+    document.write("</div>");
+
+    document.write("</div>");
+
+</script>
+
+</body>
+</html>
