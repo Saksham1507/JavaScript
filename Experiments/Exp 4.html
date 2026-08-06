@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Palindrome Finder</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eaf2f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .box {
+            background-color: white;
+            width: 400px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #222;
+        }
+
+        .info {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 15px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 11px;
+            background-color: #3949ab;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #283593;
+        }
+
+        #answer {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+            font-weight: bold;
+        }
+
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .wrong {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>Palindrome Checker</h2>
+
+    <div class="info">
+        Name: <b>Saksham Chimdyalwar</b><br>
+        PRN: <b>24070521151</b>
+    </div>
+
+    <input
+        type="text"
+        id="textInput"
+        placeholder="Enter a word or number"
+    >
+
+    <button onclick="findPalindrome()">
+        Check Palindrome
+    </button>
+
+    <div id="answer"></div>
+
+</div>
+
+
+<script>
+
+function findPalindrome() {
+
+    let text = document.getElementById("textInput").value;
+
+    let answer = document.getElementById("answer");
+
+    // Check empty input
+    if (text === "") {
+
+        answer.style.display = "block";
+        answer.className = "wrong";
+        answer.innerHTML = "Please enter a word or number.";
+
+        return;
+    }
+
+    // Convert input into lowercase
+    let original = text.toLowerCase();
+
+    // Remove spaces
+    original = original.replace(/\s/g, "");
+
+    // Reverse the input
+    let reversed = original
+                    .split("")
+                    .reverse()
+                    .join("");
+
+    // Check palindrome
+    if (original === reversed) {
+
+        answer.style.display = "block";
+        answer.className = "correct";
+
+        answer.innerHTML =
+            '"' + text + '" is a Palindrome!';
+
+    } else {
+
+        answer.style.display = "block";
+        answer.className = "wrong";
+
+        answer.innerHTML =
+            '"' + text + '" is NOT a Palindrome.';
+    }
+}
+
+</script>
+
+</body>
+</html>
