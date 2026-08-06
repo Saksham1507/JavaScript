@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grade Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #eef2f7;
+        }
+
+        .container {
+            width: 430px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-top: 0;
+        }
+
+        .student {
+            text-align: center;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 9px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 11px;
+            background-color: #3949ab;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #303f9f;
+        }
+
+        #result {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 7px;
+            background-color: #e8f5e9;
+            line-height: 1.7;
+        }
+
+        .fail {
+            background-color: #ffebee !important;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Student Grade Calculator</h2>
+
+    <div class="student">
+        <b>Name:</b> Saksham Chimdyalwar |
+        <b>PRN:</b> 24070521151
+    </div>
+
+    <label>Mathematics</label>
+    <input type="number" id="math" placeholder="Enter marks (0-100)">
+
+    <label>Science</label>
+    <input type="number" id="science" placeholder="Enter marks (0-100)">
+
+    <label>English</label>
+    <input type="number" id="english" placeholder="Enter marks (0-100)">
+
+    <label>History</label>
+    <input type="number" id="history" placeholder="Enter marks (0-100)">
+
+    <label>Computer Science</label>
+    <input type="number" id="computer" placeholder="Enter marks (0-100)">
+
+    <button onclick="calculateGrade()">Calculate Result</button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+function calculateGrade() {
+
+    let math = Number(document.getElementById("math").value);
+    let science = Number(document.getElementById("science").value);
+    let english = Number(document.getElementById("english").value);
+    let history = Number(document.getElementById("history").value);
+    let computer = Number(document.getElementById("computer").value);
+
+    let marks = [math, science, english, history, computer];
+
+    // Validate marks
+    for (let i = 0; i < marks.length; i++) {
+
+        if (marks[i] < 0 || marks[i] > 100) {
+            alert("Marks must be between 0 and 100.");
+            return;
+        }
+    }
+
+    let total = math + science + english + history + computer;
+
+    let percentage = total / 5;
+
+    let grade;
+    let status = "PASS";
+
+    // Check if student failed any subject
+    let failed = false;
+
+    for (let i = 0; i < marks.length; i++) {
+        if (marks[i] < 40) {
+            failed = true;
+        }
+    }
+
+    if (failed) {
+
+        grade = "F";
+        status = "FAIL";
+
+    } else if (percentage >= 90) {
+
+        grade = "A+";
+
+    } else if (percentage >= 80) {
+
+        grade = "A";
+
+    } else if (percentage >= 70) {
+
+        grade = "B";
+
+    } else if (percentage >= 60) {
+
+        grade = "C";
+
+    } else if (percentage >= 50) {
+
+        grade = "D";
+
+    } else {
+
+        grade = "F";
+        status = "FAIL";
+    }
+
+    let resultBox = document.getElementById("result");
+
+    resultBox.innerHTML =
+        "<b>Name:</b> Saksham Chimdyalwar<br>" +
+        "<b>PRN:</b> 24070521151<br><br>" +
+        "<b>Total Marks:</b> " + total + " / 500<br>" +
+        "<b>Percentage:</b> " + percentage.toFixed(2) + "%<br>" +
+        "<b>Grade:</b> " + grade + "<br>" +
+        "<b>Status:</b> " + status;
+
+    resultBox.style.display = "block";
+
+    if (status === "FAIL") {
+        resultBox.classList.add("fail");
+    } else {
+        resultBox.classList.remove("fail");
+    }
+}
+
+</script>
+
+</body>
+</html>
