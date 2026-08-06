@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Shopping</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+
+    body { display: flex; min-height: 100vh; background: #eef2f5; }
+
+    .products-section { flex: 2; padding: 25px; }
+    .cart-section { flex: 1; padding: 25px; background: white; border-left: 2px solid #bbb; }
+
+    h2 { margin-bottom: 18px; color: #222; }
+
+    .student {
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .card h3 { margin-bottom: 8px; }
+
+    .price {
+      color: #7b1fa2;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    button {
+      background: #7b1fa2;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #6a1b9a; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .remove-btn {
+      background: #e53935;
+      padding: 4px 8px;
+    }
+
+    .total-box {
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 10px;
+      background: #388e3c;
+      margin-top: 15px;
+    }
+
+    .checkout-btn:hover { background: #2e7d32; }
+  </style>
+</head>
+
+<body>
+
+  <!-- PRODUCTS -->
+  <section class="products-section">
+
+    <h2>Online Shopping Store</h2>
+
+    <div class="student">
+      <b>Name:</b> Saksham Chimdyalwar <br>
+      <b>PRN:</b> 24070521151
+    </div>
+
+    <div class="grid" id="productGrid"></div>
+
+  </section>
+
+
+  <!-- CART -->
+  <section class="cart-section">
+
+    <h2>My Cart</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody id="cartTable"></tbody>
+    </table>
+
+    <div class="total-box">
+      <span>Total:</span>
+      <span id="grandTotal">₹0.00</span>
+    </div>
+
+    <button class="checkout-btn" onclick="checkout()">
+      Place Order
+    </button>
+
+  </section>
+
+
+  <script>
+
+    // Product List
+    const products = [
+      { id: 1, name: "Wireless Mouse", price: 1428.00 },
+      { id: 2, name: "Keyboard", price: 2856.00 },
+      { id: 3, name: "Headphones", price: 4284.00 },
+      { id: 4, name: "USB Cable", price: 761.60 }
+    ];
+
+    let cart = [];
+
+
+    // Display Products
+    function renderProducts() {
+
+      const grid = document.getElementById("productGrid");
+
+      grid.innerHTML = products.map(p => `
+        <div class="card">
+          <h3>${p.name}</h3>
+          <p class="price">₹${p.price.toFixed(2)}</p>
+          <button onclick="addToCart(${p.id})">Add Item</button>
+        </div>
+      `).join('');
+
+    }
+
+
+    // Add Item
+    function addToCart(productId) {
+
+      const item = cart.find(i => i.id === productId);
+
+      if (item) {
+        item.qty++;
+      }
+      else {
+        const product = products.find(p => p.id === productId);
+        cart.push({ ...product, qty: 1 });
+      }
+
+      renderCart();
+    }
+
+
+    // Remove Item
+    function removeFromCart(productId) {
+
+      cart = cart.filter(i => i.id !== productId);
+
+      renderCart();
+    }
+
+
+    // Display Cart
+    function renderCart() {
+
+      const table = document.getElementById("cartTable");
+      const totalEl = document.getElementById("grandTotal");
+
+
+      if (cart.length === 0) {
+
+        table.innerHTML =
+          `<tr><td colspan="4" style="text-align:center; color:#777;">No items in cart</td></tr>`;
+
+        totalEl.textContent = "₹0.00";
+
+        return;
+      }
+
+
+      table.innerHTML = cart.map(i => `
+        <tr>
+          <td>${i.name}</td>
+          <td>${i.qty}</td>
+          <td>₹${(i.price * i.qty).toFixed(2)}</td>
+          <td>
+            <button class="remove-btn"
+            onclick="removeFromCart(${i.id})">X</button>
+          </td>
+        </tr>
+      `).join('');
+
+
+      const total = cart.reduce(
+        (sum, item) => sum + (item.price * item.qty), 0
+      );
+
+      totalEl.textContent = `₹${total.toFixed(2)}`;
+    }
+
+
+    // Checkout
+    function checkout() {
+
+      if (cart.length === 0) {
+        alert("Cart is empty!");
+        return;
+      }
+
+      alert("Order placed successfully!");
+
+      cart = [];
+
+      renderCart();
+    }
+
+
+    renderProducts();
+    renderCart();
+
+  </script>
+
+</body>
+</html>
