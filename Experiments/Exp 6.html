@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Analyzer & Email Extractor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        /* Style for the new Swap button */
+        .btn-swap {
+            background-color: #28a745;
+            margin-left: 5px;
+        }
+        .btn-swap:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 20px;
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .results p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Text Analyzer & Data Extraction</h2>
+        <p>Type or paste your paragraph below:</p>
+        <textarea id="userInput" placeholder="Type text containing emails and words here..."></textarea>
+        <br>
+        <button onclick="analyzeText()">Analyze Text</button>
+        <!-- Added Swap Case Button -->
+        <button onclick="swapCase()" class="btn-swap">Swap Case</button>
+       
+        <div class="results" id="outputSection" style="display: none;">
+            <h3>Analysis Results</h3>
+            <p><strong>Text Length (Characters):</strong> <span id="charLength" class="highlight"></span></p>
+            <p><strong>Uppercase Count:</strong> <span id="upperCount" class="highlight"></span></p>
+            <p><strong>Lowercase Count:</strong> <span id="lowerCount" class="highlight"></span></p>
+            <p><strong>Contains "Welcome":</strong> <span id="welcomeFound" class="highlight"></span></p>
+            <p><strong>Extracted Valid Emails:</strong> <span id="emailList" class="highlight"></span></p>
+        </div>
+    </div>
+
+    <script>
+        function analyzeText() {
+            const text = document.getElementById('userInput').value;
+
+            // 1. Text Length
+            const charLength = text.length;
+
+            // 2. Uppercase and Lowercase counts
+            const upperCount = (text.match(/[A-Z]/g) || []).length;
+            const lowerCount = (text.match(/[a-z]/g) || []).length;
+
+            // 3. Contains "welcome" (case-insensitive)
+            const containsWelcome = /welcome/i.test(text);
+
+            // 4. Valid Email Extraction using Regex
+            const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+            const foundEmails = text.match(emailRegex) || [];
+
+            // Remove duplicates if any
+            const uniqueEmails = [...new Set(foundEmails)];
+
+            // Display results
+            document.getElementById('charLength').innerText = charLength;
+            document.getElementById('upperCount').innerText = upperCount;
+            document.getElementById('lowerCount').innerText = lowerCount;
+            document.getElementById('welcomeFound').innerText = containsWelcome ? "Yes" : "No";
+            document.getElementById('emailList').innerText = uniqueEmails.length > 0 ? uniqueEmails.join(', ') : "None found";
+            document.getElementById('outputSection').style.display = 'block';
+        }
+
+        // New feature: Swaps character casing and re-triggers analysis
+        function swapCase() {
+            const textArea = document.getElementById('userInput');
+            const text = textArea.value;
+           
+            // Map over each letter to toggle case
+            const swappedText = text.replace(/./g, function(char) {
+                if (char === char.toUpperCase()) {
+                    return char.toLowerCase();
+                } else {
+                    return char.toUpperCase();
+                }
+            });
+           
+            // Update the input field with swapped content
+            textArea.value = swappedText;
+           
+            // Re-run analysis immediately to update counts
+            analyzeText();
+        }
+    </script>
+</body>
+</html>
