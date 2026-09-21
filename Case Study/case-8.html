@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Job Application</title>
+
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+min-height: 100vh;
+background: linear-gradient(135deg, #141e30, #243b55);
+padding: 35px 15px;
+color: #222;
+}
+
+/* MAIN CARD */
+
+.container {
+max-width: 1050px;
+margin: auto;
+background: #ffffff;
+border-radius: 22px;
+overflow: hidden;
+box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+
+.header {
+background: linear-gradient(135deg, #6a11cb, #2575fc);
+color: white;
+padding: 45px 40px;
+position: relative;
+}
+
+.header h1 {
+font-size: 34px;
+margin-bottom: 8px;
+}
+
+.header p {
+opacity: 0.9;
+font-size: 15px;
+}
+
+.header-badge {
+position: absolute;
+right: 40px;
+top: 45px;
+background: rgba(255,255,255,0.18);
+padding: 12px 18px;
+border-radius: 30px;
+font-size: 13px;
+}
+
+/* FORM */
+
+.form-container {
+padding: 40px;
+}
+
+/* SECTION */
+
+.section {
+margin-bottom: 42px;
+}
+
+.section-heading {
+display: flex;
+align-items: center;
+gap: 15px;
+margin-bottom: 25px;
+}
+
+.number {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+background: linear-gradient(135deg, #6a11cb, #2575fc);
+color: white;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: bold;
+}
+
+.section-heading h2 {
+font-size: 21px;
+color: #222;
+}
+
+.section-heading p {
+font-size: 12px;
+color: #888;
+margin-top: 3px;
+}
+
+/* GRID */
+
+.form-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 22px;
+}
+
+.full {
+grid-column: 1 / -1;
+}
+
+/* INPUT */
+
+.form-group {
+position: relative;
+}
+
+label {
+display: block;
+font-size: 13px;
+font-weight: 600;
+color: #555;
+margin-bottom: 8px;
+}
+
+.required {
+color: #e63946;
+}
+
+input,
+select,
+textarea {
+width: 100%;
+border: 1.5px solid #ddd;
+background: #fafafa;
+border-radius: 10px;
+padding: 13px 15px;
+font-size: 14px;
+outline: none;
+transition: 0.25s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+background: white;
+border-color: #6a11cb;
+box-shadow: 0 0 0 4px rgba(106,17,203,0.08);
+}
+
+textarea {
+resize: vertical;
+min-height: 100px;
+}
+
+/* VALID */
+
+input.valid,
+select.valid,
+textarea.valid {
+border-color: #20a464;
+background: #f6fff9;
+}
+
+/* INVALID */
+
+input.invalid,
+select.invalid,
+textarea.invalid {
+border-color: #e63946;
+background: #fff7f7;
+}
+
+/* ERROR */
+
+.error {
+min-height: 18px;
+margin-top: 5px;
+font-size: 12px;
+color: #e63946;
+}
+
+/* VALID ICON */
+
+.valid-icon {
+position: absolute;
+right: 13px;
+top: 38px;
+color: #20a464;
+font-weight: bold;
+display: none;
+}
+
+.form-group.is-valid .valid-icon {
+display: block;
+}
+
+/* GENDER */
+
+.gender-container {
+display: flex;
+gap: 12px;
+flex-wrap: wrap;
+}
+
+.gender-option {
+position: relative;
+}
+
+.gender-option input {
+display: none;
+}
+
+.gender-option label {
+margin: 0;
+padding: 11px 20px;
+border: 1.5px solid #ddd;
+border-radius: 30px;
+cursor: pointer;
+background: #fafafa;
+transition: 0.2s;
+}
+
+.gender-option input:checked + label {
+background: linear-gradient(135deg, #6a11cb, #2575fc);
+color: white;
+border-color: transparent;
+}
+
+/* SKILLS */
+
+.skill-box {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+margin-top: 8px;
+}
+
+.skill {
+background: #eee8ff;
+color: #5b16b5;
+padding: 6px 12px;
+border-radius: 20px;
+font-size: 12px;
+}
+
+/* BUTTONS */
+
+.buttons {
+border-top: 1px solid #eee;
+padding-top: 30px;
+display: flex;
+justify-content: flex-end;
+gap: 12px;
+}
+
+button {
+border: none;
+border-radius: 10px;
+padding: 14px 25px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: 0.2s;
+}
+
+.submit-btn {
+color: white;
+background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.submit-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 20px rgba(37,117,252,0.3);
+}
+
+.reset-btn {
+background: #eee;
+color: #444;
+}
+
+.reset-btn:hover {
+background: #ddd;
+}
+
+/* SUCCESS */
+
+.success {
+display: none;
+margin-top: 25px;
+padding: 18px;
+background: #e9fff2;
+border: 1px solid #9de7bc;
+color: #147a43;
+border-radius: 10px;
+text-align: center;
+font-weight: 600;
+}
+
+/* FOOTER */
+
+.footer {
+text-align: center;
+color: #999;
+font-size: 12px;
+padding: 0 40px 30px;
+}
+
+/* MOBILE */
+
+@media(max-width: 700px) {
+
+body {
+padding: 10px;
+}
+
+.header {
+padding: 30px 22px;
+}
+
+.header h1 {
+font-size: 25px;
+}
+
+.header-badge {
+display: none;
+}
+
+.form-container {
+padding: 25px 20px;
+}
+
+.form-grid {
+grid-template-columns: 1fr;
+}
+
+.full {
+grid-column: auto;
+}
+
+.section-heading h2 {
+font-size: 18px;
+}
+
+.buttons {
+flex-direction: column;
+}
+
+button {
+width: 100%;
+}
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+
+<div class="header">
+
+<div class="header-badge">
+Online Application
+</div>
+
+<h1>Job Application</h1>
+
+<p>
+Take the next step in your career. Fill in your details below.
+</p>
+
+</div>
+
+
+<div class="form-container">
+
+<form id="jobForm" novalidate>
+
+
+<!-- ================================================= -->
+<!-- PERSONAL INFORMATION -->
+<!-- ================================================= -->
+
+<div class="section">
+
+<div class="section-heading">
+
+<div class="number">01</div>
+
+<div>
+<h2>Personal Information</h2>
+<p>Tell us about yourself</p>
+</div>
+
+</div>
+
+
+<div class="form-grid">
+
+
+<!-- FULL NAME -->
+
+<div class="form-group full">
+
+<label>
+Full Name <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="fullName"
+placeholder="Enter your full name"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="fullNameError"></div>
+
+</div>
+
+
+<!-- DOB -->
+
+<div class="form-group">
+
+<label>
+Date of Birth <span class="required">*</span>
+</label>
+
+<input
+type="date"
+id="dob"
+>
+
+<div class="error" id="dobError"></div>
+
+</div>
+
+
+<!-- GENDER -->
+
+<div class="form-group">
+
+<label>
+Gender <span class="required">*</span>
+</label>
+
+<div class="gender-container">
+
+<div class="gender-option">
+
+<input
+type="radio"
+name="gender"
+id="male"
+value="Male"
+>
+
+<label for="male">Male</label>
+
+</div>
+
+
+<div class="gender-option">
+
+<input
+type="radio"
+name="gender"
+id="female"
+value="Female"
+>
+
+<label for="female">Female</label>
+
+</div>
+
+
+<div class="gender-option">
+
+<input
+type="radio"
+name="gender"
+id="other"
+value="Other"
+>
+
+<label for="other">Other</label>
+
+</div>
+
+</div>
+
+<div class="error" id="genderError"></div>
+
+</div>
+
+
+<!-- EMAIL -->
+
+<div class="form-group">
+
+<label>
+Email Address <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="email"
+placeholder="example@gmail.com"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="emailError"></div>
+
+</div>
+
+
+<!-- MOBILE -->
+
+<div class="form-group">
+
+<label>
+Mobile Number <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="mobile"
+maxlength="10"
+placeholder="10 digit mobile number"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="mobileError"></div>
+
+</div>
+
+
+<!-- ADDRESS -->
+
+<div class="form-group full">
+
+<label>
+Address <span class="required">*</span>
+</label>
+
+<textarea
+id="address"
+placeholder="Enter your complete address"
+></textarea>
+
+<div class="error" id="addressError"></div>
+
+</div>
+
+
+<!-- CITY -->
+
+<div class="form-group">
+
+<label>
+City <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="city"
+placeholder="Enter city"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="cityError"></div>
+
+</div>
+
+
+<!-- STATE -->
+
+<div class="form-group">
+
+<label>
+State <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="state"
+placeholder="Enter state"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="stateError"></div>
+
+</div>
+
+
+<!-- PIN -->
+
+<div class="form-group">
+
+<label>
+PIN Code <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="pin"
+maxlength="6"
+placeholder="6 digit PIN"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="pinError"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================================================= -->
+<!-- EDUCATION -->
+<!-- ================================================= -->
+
+<div class="section">
+
+<div class="section-heading">
+
+<div class="number">02</div>
+
+<div>
+<h2>Educational Qualification</h2>
+<p>Your academic background</p>
+</div>
+
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+<label>
+Highest Qualification <span class="required">*</span>
+</label>
+
+<select id="qualification">
+
+<option value="">
+Select qualification
+</option>
+
+<option>10th</option>
+<option>12th</option>
+<option>Diploma</option>
+<option>Bachelor's Degree</option>
+<option>Master's Degree</option>
+<option>PhD</option>
+
+</select>
+
+<div class="error" id="qualificationError"></div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+University / Institute <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="university"
+placeholder="University / Institute name"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="universityError"></div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Passing Year <span class="required">*</span>
+</label>
+
+<input
+type="number"
+id="passingYear"
+placeholder="YYYY"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="passingYearError"></div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Percentage / CGPA <span class="required">*</span>
+</label>
+
+<input
+type="number"
+id="percentage"
+step="0.01"
+placeholder="Enter percentage"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="percentageError"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================================================= -->
+<!-- PROFESSIONAL -->
+<!-- ================================================= -->
+
+<div class="section">
+
+<div class="section-heading">
+
+<div class="number">03</div>
+
+<div>
+<h2>Professional Information</h2>
+<p>Your work experience</p>
+</div>
+
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+<label>
+Applying For / Job Position <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="jobPosition"
+placeholder="e.g. Software Developer"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="jobPositionError"></div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Total Work Experience <span class="required">*</span>
+</label>
+
+<select id="experience">
+
+<option value="">
+Select experience
+</option>
+
+<option>Fresher</option>
+<option>0 - 1 Year</option>
+<option>1 - 3 Years</option>
+<option>3 - 5 Years</option>
+<option>More than 5 Years</option>
+
+</select>
+
+<div class="error" id="experienceError"></div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Current / Previous Organization
+</label>
+
+<input
+type="text"
+id="organization"
+placeholder="Company name"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Current Designation
+</label>
+
+<input
+type="text"
+id="designation"
+placeholder="Your designation"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Expected Salary <span class="required">*</span>
+</label>
+
+<input
+type="number"
+id="salary"
+placeholder="Expected annual salary"
+>
+
+<span class="valid-icon">✓</span>
+
+<div class="error" id="salaryError"></div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================================================= -->
+<!-- TECHNICAL SKILLS -->
+<!-- ================================================= -->
+
+<div class="section">
+
+<div class="section-heading">
+
+<div class="number">04</div>
+
+<div>
+<h2>Technical Skills</h2>
+<p>Showcase your technical knowledge</p>
+</div>
+
+</div>
+
+
+<div class="form-grid">
+
+
+<div class="form-group full">
+
+<label>
+Programming Languages <span class="required">*</span>
+</label>
+
+<input
+type="text"
+id="programming"
+placeholder="e.g. C, C++, Java, Python, JavaScript"
+>
+
+<div class="skill-box">
+
+<span class="skill">Python</span>
+<span class="skill">Java</span>
+<span class="skill">C++</span>
+<span class="skill">JavaScript</span>
+
+</div>
+
+<div class="error" id="programmingError"></div>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+Technical Skills <span class="required">*</span>
+</label>
+
+<textarea
+id="technicalSkills"
+placeholder="e.g. HTML, CSS, React, SQL, Git, Machine Learning"
+></textarea>
+
+<div class="error" id="technicalSkillsError"></div>
+
+</div>
+
+
+<div class="form-group full">
+
+<label>
+Certifications
+</label>
+
+<textarea
+id="certifications"
+placeholder="Enter your certifications"
+></textarea>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================================================= -->
+<!-- ADDITIONAL -->
+<!-- ================================================= -->
+
+<div class="section">
+
+<div class="section-heading">
+
+<div class="number">05</div>
+
+<div>
+<h2>Additional Information</h2>
+<p>Anything else you'd like us to know</p>
+</div>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Cover Letter / Additional Information
+</label>
+
+<textarea
+id="coverLetter"
+placeholder="Write something about yourself..."
+></textarea>
+
+</div>
+
+</div>
+
+
+<!-- BUTTONS -->
+
+<div class="buttons">
+
+<button
+type="reset"
+class="reset-btn"
+id="resetBtn"
+>
+Reset
+</button>
+
+<button
+type="submit"
+class="submit-btn"
+>
+Submit Application →
+</button>
+
+</div>
+
+
+<div
+class="success"
+id="successMessage"
+>
+✓ Application submitted successfully!
+</div>
+
+
+</form>
+
+</div>
+
+
+<div class="footer">
+Your information will be used only for the recruitment process.
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+HELPER FUNCTIONS
+===================================================== */
+
+function error(input, errorId, message) {
+
+input.classList.remove("valid");
+input.classList.add("invalid");
+
+input.closest(".form-group")
+?.classList.remove("is-valid");
+
+document.getElementById(errorId).textContent = message;
+
+return false;
+}
+
+
+function valid(input, errorId) {
+
+input.classList.remove("invalid");
+input.classList.add("valid");
+
+input.closest(".form-group")
+?.classList.add("is-valid");
+
+document.getElementById(errorId).textContent = "";
+
+return true;
+}
+
+
+/* =====================================================
+NAME
+===================================================== */
+
+function validateName() {
+
+let value = fullName.value.trim();
+
+if (value === "")
+return error(
+fullName,
+"fullNameError",
+"Please enter your full name."
+);
+
+if (value.length < 3)
+return error(
+fullName,
+"fullNameError",
+"Name must contain at least 3 characters."
+);
+
+if (!/^[A-Za-z ]+$/.test(value))
+return error(
+fullName,
+"fullNameError",
+"Name should contain only letters."
+);
+
+return valid(fullName, "fullNameError");
+}
+
+
+/* =====================================================
+DOB
+===================================================== */
+
+function validateDOB() {
+
+if (dob.value === "")
+return error(
+dob,
+"dobError",
+"Please select your date of birth."
+);
+
+let date = new Date(dob.value);
+let today = new Date();
+
+if (date >= today)
+return error(
+dob,
+"dobError",
+"Date of birth must be in the past."
+);
+
+return valid(dob, "dobError");
+}
+
+
+/* =====================================================
+EMAIL
+===================================================== */
+
+function validateEmail() {
+
+let value = email.value.trim();
+
+if (value === "")
+return error(
+email,
+"emailError",
+"Please enter your email address."
+);
+
+let pattern =
+/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+if (!pattern.test(value))
+return error(
+email,
+"emailError",
+"Please enter a valid email address."
+);
+
+return valid(email, "emailError");
+}
+
+
+/* =====================================================
+MOBILE
+===================================================== */
+
+function validateMobile() {
+
+let value = mobile.value;
+
+if (value === "")
+return error(
+mobile,
+"mobileError",
+"Please enter your mobile number."
+);
+
+if (!/^\d+$/.test(value))
+return error(
+mobile,
+"mobileError",
+"Only numbers are allowed."
+);
+
+if (value.length < 10)
+return error(
+mobile,
+"mobileError",
+`Please enter 10 digits. ${value.length}/10 entered.`
+);
+
+if (!/^[6-9]/.test(value))
+return error(
+mobile,
+"mobileError",
+"Mobile number should start with 6, 7, 8 or 9."
+);
+
+return valid(mobile, "mobileError");
+}
+
+
+/* =====================================================
+ADDRESS
+===================================================== */
+
+function validateAddress() {
+
+if (address.value.trim() === "")
+return error(
+address,
+"addressError",
+"Please enter your address."
+);
+
+return valid(address, "addressError");
+}
+
+
+/* =====================================================
+CITY
+===================================================== */
+
+function validateCity() {
+
+let value = city.value.trim();
+
+if (value === "")
+return error(
+city,
+"cityError",
+"Please enter your city."
+);
+
+if (!/^[A-Za-z ]+$/.test(value))
+return error(
+city,
+"cityError",
+"City should contain only letters."
+);
+
+return valid(city, "cityError");
+}
+
+
+/* =====================================================
+STATE
+===================================================== */
+
+function validateState() {
+
+let value = state.value.trim();
+
+if (value === "")
+return error(
+state,
+"stateError",
+"Please enter your state."
+);
+
+if (!/^[A-Za-z ]+$/.test(value))
+return error(
+state,
+"stateError",
+"State should contain only letters."
+);
+
+return valid(state, "stateError");
+}
+
+
+/* =====================================================
+PIN
+===================================================== */
+
+function validatePin() {
+
+let value = pin.value;
+
+if (value === "")
+return error(
+pin,
+"pinError",
+"Please enter your PIN code."
+);
+
+if (value.length < 6)
+return error(
+pin,
+"pinError",
+`Please enter 6 digits. ${value.length}/6 entered.`
+);
+
+return valid(pin, "pinError");
+}
+
+
+/* =====================================================
+QUALIFICATION
+===================================================== */
+
+function validateQualification() {
+
+if (qualification.value === "")
+return error(
+qualification,
+"qualificationError",
+"Please select your qualification."
+);
+
+return valid(
+qualification,
+"qualificationError"
+);
+}
+
+
+/* =====================================================
+UNIVERSITY
+===================================================== */
+
+function validateUniversity() {
+
+if (university.value.trim() === "")
+return error(
+university,
+"universityError",
+"Please enter your university/institute."
+);
+
+return valid(
+university,
+"universityError"
+);
+}
+
+
+/* =====================================================
+PASSING YEAR
+===================================================== */
+
+function validatePassingYear() {
+
+let value = Number(passingYear.value);
+
+let currentYear =
+new Date().getFullYear();
+
+if (!passingYear.value)
+return error(
+passingYear,
+"passingYearError",
+"Please enter passing year."
+);
+
+if (value < 1950 || value > currentYear)
+return error(
+passingYear,
+"passingYearError",
+`Enter a year between 1950 and ${currentYear}.`
+);
+
+return valid(
+passingYear,
+"passingYearError"
+);
+}
+
+
+/* =====================================================
+PERCENTAGE
+===================================================== */
+
+function validatePercentage() {
+
+let value = Number(percentage.value);
+
+if (percentage.value === "")
+return error(
+percentage,
+"percentageError",
+"Please enter percentage/CGPA."
+);
+
+if (value < 0 || value > 100)
+return error(
+percentage,
+"percentageError",
+"Value must be between 0 and 100."
+);
+
+return valid(
+percentage,
+"percentageError"
+);
+}
+
+
+/* =====================================================
+JOB
+===================================================== */
+
+function validateJob() {
+
+if (jobPosition.value.trim() === "")
+return error(
+jobPosition,
+"jobPositionError",
+"Please enter the job position."
+);
+
+return valid(
+jobPosition,
+"jobPositionError"
+);
+}
+
+
+/* =====================================================
+EXPERIENCE
+===================================================== */
+
+function validateExperience() {
+
+if (experience.value === "")
+return error(
+experience,
+"experienceError",
+"Please select your experience."
+);
+
+return valid(
+experience,
+"experienceError"
+);
+}
+
+
+/* =====================================================
+SALARY
+===================================================== */
+
+function validateSalary() {
+
+if (salary.value === "")
+return error(
+salary,
+"salaryError",
+"Please enter expected salary."
+);
+
+if (Number(salary.value) < 0)
+return error(
+salary,
+"salaryError",
+"Salary cannot be negative."
+);
+
+return valid(
+salary,
+"salaryError"
+);
+}
+
+
+/* =====================================================
+PROGRAMMING
+===================================================== */
+
+function validateProgramming() {
+
+if (programming.value.trim() === "")
+return error(
+programming,
+"programmingError",
+"Please enter programming languages."
+);
+
+return valid(
+programming,
+"programmingError"
+);
+}
+
+
+/* =====================================================
+TECHNICAL SKILLS
+===================================================== */
+
+function validateTechnical() {
+
+if (technicalSkills.value.trim() === "")
+return error(
+technicalSkills,
+"technicalSkillsError",
+"Please enter your technical skills."
+);
+
+return valid(
+technicalSkills,
+"technicalSkillsError"
+);
+}
+
+
+/* =====================================================
+GET ELEMENTS
+===================================================== */
+
+const fullName =
+document.getElementById("fullName");
+
+const dob =
+document.getElementById("dob");
+
+const email =
+document.getElementById("email");
+
+const mobile =
+document.getElementById("mobile");
+
+const address =
+document.getElementById("address");
+
+const city =
+document.getElementById("city");
+
+const state =
+document.getElementById("state");
+
+const pin =
+document.getElementById("pin");
+
+const qualification =
+document.getElementById("qualification");
+
+const university =
+document.getElementById("university");
+
+const passingYear =
+document.getElementById("passingYear");
+
+const percentage =
+document.getElementById("percentage");
+
+const jobPosition =
+document.getElementById("jobPosition");
+
+const experience =
+document.getElementById("experience");
+
+const salary =
+document.getElementById("salary");
+
+const programming =
+document.getElementById("programming");
+
+const technicalSkills =
+document.getElementById("technicalSkills");
+
+const form =
+document.getElementById("jobForm");
+
+
+/* =====================================================
+REAL-TIME EVENTS
+===================================================== */
+
+fullName.addEventListener(
+"input",
+validateName
+);
+
+dob.addEventListener(
+"change",
+validateDOB
+);
+
+email.addEventListener(
+"input",
+validateEmail
+);
+
+
+mobile.addEventListener(
+"input",
+function() {
+
+mobile.value =
+mobile.value.replace(/\D/g, "");
+
+validateMobile();
+}
+);
+
+
+address.addEventListener(
+"input",
+validateAddress
+);
+
+
+city.addEventListener(
+"input",
+validateCity
+);
+
+
+state.addEventListener(
+"input",
+validateState
+);
+
+
+pin.addEventListener(
+"input",
+function() {
+
+pin.value =
+pin.value.replace(/\D/g, "");
+
+validatePin();
+}
+);
+
+
+qualification.addEventListener(
+"change",
+validateQualification
+);
+
+
+university.addEventListener(
+"input",
+validateUniversity
+);
+
+
+passingYear.addEventListener(
+"input",
+validatePassingYear
+);
+
+
+percentage.addEventListener(
+"input",
+validatePercentage
+);
+
+
+jobPosition.addEventListener(
+"input",
+validateJob
+);
+
+
+experience.addEventListener(
+"change",
+validateExperience
+);
+
+
+salary.addEventListener(
+"input",
+validateSalary
+);
+
+
+programming.addEventListener(
+"input",
+validateProgramming
+);
+
+
+technicalSkills.addEventListener(
+"input",
+validateTechnical
+);
+
+
+/* =====================================================
+GENDER
+===================================================== */
+
+document.querySelectorAll(
+'input[name="gender"]'
+).forEach(function(radio) {
+
+radio.addEventListener(
+"change",
+function() {
+
+document.getElementById(
+"genderError"
+).textContent = "";
+
+}
+);
+
+});
+
+
+/* =====================================================
+SUBMIT
+===================================================== */
+
+form.addEventListener(
+"submit",
+function(event) {
+
+event.preventDefault();
+
+let gender =
+document.querySelector(
+'input[name="gender"]:checked'
+);
+
+let genderValid = true;
+
+if (!gender) {
+
+document.getElementById(
+"genderError"
+).textContent =
+"Please select your gender.";
+
+genderValid = false;
+}
+
+
+let allValid =
+validateName() &&
+validateDOB() &&
+genderValid &&
+validateEmail() &&
+validateMobile() &&
+validateAddress() &&
+validateCity() &&
+validateState() &&
+validatePin() &&
+validateQualification() &&
+validateUniversity() &&
+validatePassingYear() &&
+validatePercentage() &&
+validateJob() &&
+validateExperience() &&
+validateSalary() &&
+validateProgramming() &&
+validateTechnical();
+
+
+if (allValid) {
+
+document.getElementById(
+"successMessage"
+).style.display = "block";
+
+document.getElementById(
+"successMessage"
+).scrollIntoView({
+behavior: "smooth"
+});
+
+} else {
+
+document.getElementById(
+"successMessage"
+).style.display = "none";
+
+let firstInvalid =
+document.querySelector(
+".invalid"
+);
+
+if (firstInvalid) {
+
+firstInvalid.scrollIntoView({
+behavior: "smooth",
+block: "center"
+});
+
+firstInvalid.focus();
+
+}
+}
+
+}
+);
+
+
+/* =====================================================
+RESET
+===================================================== */
+
+document.getElementById(
+"resetBtn"
+).addEventListener(
+"click",
+function() {
+
+setTimeout(function() {
+
+document
+.querySelectorAll(
+"input, select, textarea"
+)
+.forEach(function(element) {
+
+element.classList.remove(
+"valid",
+"invalid"
+);
+
+});
+
+
+document
+.querySelectorAll(
+".form-group"
+)
+.forEach(function(group) {
+
+group.classList.remove(
+"is-valid"
+);
+
+});
+
+
+document
+.querySelectorAll(
+".error"
+)
+.forEach(function(error) {
+
+error.textContent = "";
+
+});
+
+
+document.getElementById(
+"successMessage"
+).style.display = "none";
+
+}, 10);
+
+}
+);
+
+</script>
+
+</body>
+</html>
