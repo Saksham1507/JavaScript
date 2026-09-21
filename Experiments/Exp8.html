@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Admission Form</title>
+    <style>
+        :root {
+            --primary-color: #ff4757;
+            --secondary-color: #2f3542;
+            --bg-color: #f1f2f6;
+            --card-bg: #ffffff;
+            --error-color: #ff4757;
+            --success-color: #2ed573;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--secondary-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .form-container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+            background-color: #fff;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        .input-error {
+            border-color: var(--error-color) !important;
+        }
+        .error-message {
+            color: var(--error-color);
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+            font-weight: 500;
+        }
+        /* Price Summary Card Styles */
+        .price-summary {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .price-summary p {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+        .price-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #ff6b81;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Gym Admission</h2>
+        <form id="gymForm" onsubmit="return validateForm(event)">
+            <!-- Name Field -->
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="John Doe" required>
+            </div>
+
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="name@example.com" required>
+                <div id="emailError" class="error-message">Please enter a valid email address.</div>
+            </div>
+
+            <!-- Mobile Number Field -->
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" placeholder="Enter 10-digit number" required>
+                <div id="mobileError" class="error-message">Please enter exactly 10 digits.</div>
+            </div>
+
+            <!-- Age Field -->
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" placeholder="Enter your age" required>
+            </div>
+
+            <!-- Membership Plan (Prices updated to INR ₹) -->
+            <div class="form-group">
+                <label for="membership">Membership Plan</label>
+                <select id="membership" required>
+                    <option value="" disabled selected>Select a plan...</option>
+                    <option value="Monthly" data-price="₹1,500" data-billing="Billed monthly">Monthly Plan (₹1,500 / mo)</option>
+                    <option value="Quarterly" data-price="₹4,000" data-billing="Billed every 3 months (Save 11%)">Quarterly Plan (₹4,000 / 3 mos)</option>
+                    <option value="Yearly" data-price="₹12,000" data-billing="Billed annually (Save 33%)">Yearly Plan (₹12,000 / yr)</option>
+                </select>
+            </div>
+
+            <!-- Dynamic Price Summary Block -->
+            <div id="priceSummary" class="price-summary">
+                <p>Selected Plan: <strong id="summaryPlanName">-</strong></p>
+                <p>Billing Details: <span id="summaryBilling">-</span></p>
+                <p>Total Due: <span id="summaryPrice" class="price-amount">-</span></p>
+            </div>
+
+            <button type="submit">Join Gym</button>
+        </form>
+    </div>
+
+    <script>
+        const mobileInput = document.getElementById('mobile');
+        const mobileError = document.getElementById('mobileError');
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+       
+        const membershipSelect = document.getElementById('membership');
+        const priceSummary = document.getElementById('priceSummary');
+        const summaryPlanName = document.getElementById('summaryPlanName');
+        const summaryBilling = document.getElementById('summaryBilling');
+        const summaryPrice = document.getElementById('summaryPrice');
+
+        // Live Mobile Validation
+        mobileInput.addEventListener('input', () => {
+            mobileInput.value = mobileInput.value.replace(/\D/g, '');
+            if (mobileInput.value.length !== 10 && mobileInput.value.length > 0) {
+                mobileError.textContent = `Please enter exactly 10 digits (Current: ${mobileInput.value.length})`;
+                mobileError.style.display = 'block';
+                mobileInput.classList.add('input-error');
+            } else {
+                mobileError.style.display = 'none';
+                mobileInput.classList.remove('input-error');
+            }
+        });
+
+        // Live Email Validation
+        emailInput.addEventListener('input', () => {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value) && emailInput.value.length > 0) {
+                emailError.style.display = 'block';
+                emailInput.classList.add('input-error');
+            } else {
+                emailError.style.display = 'none';
+                emailInput.classList.remove('input-error');
+            }
+        });
+
+        // Dynamic Pricing Display Logic
+        membershipSelect.addEventListener('change', () => {
+            const selectedOption = membershipSelect.options[membershipSelect.selectedIndex];
+           
+            if (selectedOption.value) {
+                summaryPlanName.textContent = selectedOption.value + " Plan";
+                summaryBilling.textContent = selectedOption.getAttribute('data-billing');
+                summaryPrice.textContent = selectedOption.getAttribute('data-price');
+                priceSummary.style.display = 'block';
+            } else {
+                priceSummary.style.display = 'none';
+            }
+        });
+
+        // Form Submission Safeguard
+        function validateForm(event) {
+            event.preventDefault();
+            if (mobileInput.value.length !== 10) {
+                alert('Please enter a valid 10-digit mobile number.');
+                return false;
+            }
+           
+            const selectedPlan = membershipSelect.value;
+            const selectedPrice = membershipSelect.options[membershipSelect.selectedIndex].getAttribute('data-price');
+           
+            alert(`Form submitted successfully!\nWelcome to the gym.\nYou selected the ${selectedPlan} Plan (${selectedPrice}).`);
+           
+            document.getElementById('gymForm').reset();
+            priceSummary.style.display = 'none';
+            return true;
+        }
+    </script>
+</body>
+</html>
