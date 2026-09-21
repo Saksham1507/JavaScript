@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centered JavaScript Event Handling Form</title>
+    <style>
+        /* Centers the form box perfectly on the screen */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+        div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        /* Checkbox wrapper layout styling */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checkbox-group input {
+            width: auto;
+        }
+        .checkbox-group label {
+            display: inline;
+            margin: 0;
+        }
+        input:focus, select:focus {
+            border-color: #0056b3;
+            background-color: #f0f7ff;
+            outline: none;
+        }
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: none;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #004085;
+        }
+        #log-panel {
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #555;
+            font-style: italic;
+            text-align: center;
+            min-height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="registrationForm">
+        <h2>Registration Form</h2>
+       
+        <!-- Field 1: Full Name (focus event) -->
+        <div>
+            <label for="username">Full Name:</label>
+            <input type="text" id="username" placeholder="Enter your full name">
+            <small id="nameError" class="error">Name field cannot be empty.</small>
+        </div>
+
+        <!-- Field 2: Email Address (validation) -->
+        <div>
+            <label for="email">Email Address:</label>
+            <input type="text" id="email" placeholder="example@domain.com">
+            <small id="emailError" class="error">Please enter a valid email address.</small>
+        </div>
+
+        <!-- NEW Field 3: Phone Number (validation) -->
+        <div>
+            <label for="phone">Phone Number:</label>
+            <input type="text" id="phone" placeholder="Enter 10-digit number">
+            <small id="phoneError" class="error">Please enter a valid 10-digit phone number.</small>
+        </div>
+
+        <!-- Field 4: Contact Preference (change event) -->
+        <div>
+            <label for="preference">Contact Preference:</label>
+            <select id="preference">
+                <option value="Email">Email</option>
+                <option value="Phone">Phone</option>
+            </select>
+        </div>
+
+        <!-- NEW Field 5: Terms Checkbox (validation) -->
+        <div class="checkbox-group">
+            <input type="checkbox" id="terms">
+            <label for="terms">I agree to the terms and conditions</label>
+        </div>
+        <small id="termsError" class="error">You must accept the terms to proceed.</small>
+
+        <button type="submit">Submit Form</button>
+       
+        <p id="log-panel"></p>
+    </form>
+
+    <script>
+        // DOM element selections
+        const form = document.getElementById('registrationForm');
+        const username = document.getElementById('username');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const preference = document.getElementById('preference');
+        const terms = document.getElementById('terms');
+        const logPanel = document.getElementById('log-panel');
+
+        // Error message elements
+        const nameError = document.getElementById('nameError');
+        const emailError = document.getElementById('emailError');
+        const phoneError = document.getElementById('phoneError');
+        const termsError = document.getElementById('termsError');
+
+        // Logger utility
+        function logEvent(message) {
+            logPanel.innerText = `Event Tracker: ${message}`;
+        }
+
+        // Focus events
+        username.addEventListener('focus', () => logEvent("Focused on 'Full Name'."));
+        email.addEventListener('focus', () => logEvent("Focused on 'Email'."));
+        phone.addEventListener('focus', () => logEvent("Focused on 'Phone'."));
+
+        // Change event
+        preference.addEventListener('change', (e) => {
+            logEvent(`Contact preference shifted to: ${e.target.value}`);
+        });
+
+        // Submit and Validation events
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            logEvent("Form submission initiated.");
+
+            let isValid = true;
+
+            // 1. Validate Name
+            if (username.value.trim() === "") {
+                nameError.style.display = "block";
+                isValid = false;
+            } else {
+                nameError.style.display = "none";
+            }
+
+            // 2. Validate Email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value.trim())) {
+                emailError.style.display = "block";
+                isValid = false;
+            } else {
+                emailError.style.display = "none";
+            }
+
+            // 3. Validate Phone (Matches simple 10 digit pattern)
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phone.value.trim())) {
+                phoneError.style.display = "block";
+                isValid = false;
+            } else {
+                phoneError.style.display = "none";
+            }
+
+            // 4. Validate Checkbox
+            if (!terms.checked) {
+                termsError.style.display = "block";
+                isValid = false;
+            } else {
+                termsError.style.display = "none";
+            }
+
+            // Final check handler
+            if (isValid) {
+                alert("Success! Form data verified and processed.");
+                form.reset();
+                logPanel.innerText = "";
+            }
+        });
+    </script>
+
+</body>
+</html>
