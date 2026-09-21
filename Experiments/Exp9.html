@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Preference Manager</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --container-bg: #f5f5f5;
+            --border-color: #cccccc;
+            --btn-bg: #e0e0e0;
+            --btn-text: #333333;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e1e1e;
+            --text-color: #f5f5f5;
+            --container-bg: #2d2d2d;
+            --border-color: #444444;
+            --btn-bg: #444444;
+            --btn-text: #ffffff;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background-color: var(--container-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .status {
+            margin-top: 15px;
+            font-size: 14px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Theme Preference</h2>
+       
+        <!-- 1. List to select theme -->
+        <label for="themeSelect">Choose a theme:</label>
+        <select id="themeSelect">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+
+        <!-- 2. Buttons to store preference -->
+        <button id="saveLocalBtn">Save to Local Storage</button>
+        <button id="saveSessionBtn">Save to Session Storage</button>
+
+        <!-- 3. Button to clear preference -->
+        <button id="clearBtn" style="background-color: #ff4d4d; color: white;">Clear Preferences</button>
+
+        <div class="status" id="statusMessage"></div>
+    </div>
+
+    <script>
+        const themeSelect = document.getElementById('themeSelect');
+        const saveLocalBtn = document.getElementById('saveLocalBtn');
+        const saveSessionBtn = document.getElementById('saveSessionBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Apply theme to document
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            themeSelect.value = theme;
+        }
+
+        // Check for existing preferences on page load
+        function loadSavedTheme() {
+            const localTheme = localStorage.getItem('userTheme');
+            const sessionTheme = sessionStorage.getItem('userTheme');
+
+            if (localTheme) {
+                applyTheme(localTheme);
+                statusMessage.textContent = "Loaded preference from Local Storage.";
+            } else if (sessionTheme) {
+                applyTheme(sessionTheme);
+                statusMessage.textContent = "Loaded preference from Session Storage.";
+            } else {
+                applyTheme('light');
+                statusMessage.textContent = "No saved preference found. Using default light theme.";
+            }
+        }
+
+        // Live preview when dropdown changes
+        themeSelect.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+            statusMessage.textContent = "Previewing theme... Save to keep changes.";
+        });
+
+        // Save to Local Storage (Persists even after closing browser)
+        saveLocalBtn.addEventListener('click', () => {
+            const selectedTheme = themeSelect.value;
+            localStorage.setItem('userTheme', selectedTheme);
+            sessionStorage.removeItem('userTheme'); // Clear session to avoid conflicts
+            statusMessage.textContent = `Saved "${selectedTheme}" to Local Storage (Permanent).`;
+        });
+
+        // Save to Session Storage (Cleared when tab closes)
+        saveSessionBtn.addEventListener('click', () => {
+            const selectedTheme = themeSelect.value;
+            sessionStorage.setItem('userTheme', selectedTheme);
+            localStorage.removeItem('userTheme'); // Clear local to avoid conflicts
+            statusMessage.textContent = `Saved "${selectedTheme}" to Session Storage (Temporary).`;
+        });
+
+        // Clear all saved storage preferences
+        clearBtn.addEventListener('click', () => {
+            localStorage.removeItem('userTheme');
+            sessionStorage.removeItem('userTheme');
+            applyTheme('light');
+            statusMessage.textContent = "Cleared all saved preferences. Reset to default light theme.";
+        });
+
+        // Initialize on load
+        loadSavedTheme();
+    </script>
+</body>
+</html>
