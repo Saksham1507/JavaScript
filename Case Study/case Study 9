@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List with Stats Counter</title>
+
+    <style>
+        /* ==============================
+           LIGHT THEME VARIABLES
+        ============================== */
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --heading-color: #2c3e50;
+            --primary-color: #4a90e2;
+            --edit-color: #f39c12;
+            --delete-color: #e74c3c;
+            --border-color: #e0e0e0;
+            --done-color: #2ecc71;
+            --task-bg: #fafafa;
+            --input-bg: #ffffff;
+            --secondary-text: #555555;
+            --summary-border: #f4f7f6;
+            --shadow: rgba(0, 0, 0, 0.05);
+        }
+
+        /* ==============================
+           DARK THEME VARIABLES
+        ============================== */
+        body.dark-theme {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #eeeeee;
+            --heading-color: #ffffff;
+            --primary-color: #5aa0f2;
+            --edit-color: #f5a623;
+            --delete-color: #ff5c5c;
+            --border-color: #3a3a3a;
+            --done-color: #35d07f;
+            --task-bg: #292929;
+            --input-bg: #252525;
+            --secondary-text: #bbbbbb;
+            --summary-border: #333333;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* ==============================
+           BODY
+        ============================== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+            margin: 0;
+
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ==============================
+           TODO CONTAINER
+        ============================== */
+        .todo-container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+
+            box-shadow: 0 8px 24px var(--shadow);
+
+            width: 100%;
+            max-width: 480px;
+
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* ==============================
+           HEADER
+        ============================== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin: 0;
+            color: var(--heading-color);
+        }
+
+        /* ==============================
+           THEME BUTTON
+        ============================== */
+        #theme-btn {
+            background-color: var(--primary-color);
+            color: white;
+
+            border: none;
+            border-radius: 50%;
+
+            width: 42px;
+            height: 42px;
+
+            padding: 0;
+
+            cursor: pointer;
+            font-size: 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        #theme-btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* ==============================
+           INPUT GROUP
+        ============================== */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+
+            padding: 12px;
+
+            background-color: var(--input-bg);
+            color: var(--text-color);
+
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+
+            font-size: 16px;
+            outline: none;
+
+            transition:
+                border-color 0.3s,
+                background-color 0.3s,
+                color 0.3s;
+        }
+
+        input[type="text"]::placeholder {
+            color: #888888;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* ==============================
+           BUTTONS
+        ============================== */
+        button {
+            padding: 12px 20px;
+
+            border: none;
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+            font-size: 14px;
+
+            transition: background-color 0.2s;
+        }
+
+        #add-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #add-btn:hover {
+            background-color: #357abd;
+        }
+
+        /* ==============================
+           TODO LIST
+        ============================== */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 12px;
+
+            background: var(--task-bg);
+
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+
+            margin-bottom: 10px;
+            gap: 12px;
+
+            transition:
+                opacity 0.2s,
+                background-color 0.3s,
+                border-color 0.3s;
+        }
+
+        li.completed-row {
+            background-color: #f0fbf5;
+            border-color: #c2eed5;
+        }
+
+        body.dark-theme li.completed-row {
+            background-color: #183326;
+            border-color: #286342;
+        }
+
+        /* ==============================
+           TASK LEFT SECTION
+        ============================== */
+        .task-left-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .done-checkbox {
+            width: 20px;
+            height: 20px;
+
+            cursor: pointer;
+            accent-color: var(--done-color);
+        }
+
+        .task-text {
+            flex: 1;
+
+            word-break: break-word;
+            font-size: 16px;
+
+            color: var(--text-color);
+
+            transition: color 0.2s;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #7f8c8d;
+        }
+
+        /* ==============================
+           EDIT INPUT
+        ============================== */
+        .edit-input {
+            flex: 1;
+
+            padding: 8px;
+
+            font-size: 16px;
+
+            background-color: var(--input-bg);
+            color: var(--text-color);
+
+            border: 1px solid var(--edit-color);
+            border-radius: 4px;
+        }
+
+        /* ==============================
+           ACTION BUTTONS
+        ============================== */
+        .action-btns {
+            display: flex;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background-color: var(--edit-color);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #d35400;
+        }
+
+        .delete-btn {
+            background-color: var(--delete-color);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* ==============================
+           STATISTICS SUMMARY
+        ============================== */
+        .todo-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-top: 20px;
+            padding-top: 15px;
+
+            border-top: 2px solid var(--summary-border);
+
+            font-size: 14px;
+            color: var(--secondary-text);
+
+            font-weight: 500;
+        }
+
+        .stat-item span {
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .stat-item.done-count span {
+            color: var(--done-color);
+        }
+
+        /* ==============================
+           MOBILE RESPONSIVE
+        ============================== */
+        @media (max-width: 500px) {
+            .todo-container {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            #add-btn {
+                width: 100%;
+            }
+
+            .todo-summary {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="todo-container">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h2>24070521151</h2>
+
+            <!-- Theme Toggle Button -->
+            <button id="theme-btn" title="Change Theme">🌙</button>
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-group">
+            <input
+                type="text"
+                id="todo-input"
+                placeholder="Add a new task..."
+                autocomplete="off"
+            >
+
+            <button id="add-btn">Add Task</button>
+        </div>
+
+        <!-- TASK LIST -->
+        <ul id="todo-list"></ul>
+
+        <!-- STATISTICS -->
+        <div class="todo-summary">
+            <div class="stat-item">
+                Total Tasks:
+                <span id="total-count">0</span>
+            </div>
+
+            <div class="stat-item">
+                Pending:
+                <span id="pending-count">0</span>
+            </div>
+
+            <div class="stat-item done-count">
+                Completed:
+                <span id="completed-count">0</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =====================================
+           ELEMENT REFERENCES
+        ===================================== */
+
+        const todoInput = document.getElementById('todo-input');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
+
+        // Counter Elements
+        const totalCountEl = document.getElementById('total-count');
+        const pendingCountEl = document.getElementById('pending-count');
+        const completedCountEl = document.getElementById('completed-count');
+
+        // Theme Button
+        const themeBtn = document.getElementById('theme-btn');
+
+
+        /* =====================================
+           LOAD TASKS FROM LOCAL STORAGE
+        ===================================== */
+
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+
+        /* =====================================
+           SAVE TASKS
+        ===================================== */
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+
+        /* =====================================
+           THEME FUNCTION
+        ===================================== */
+
+        function setTheme(theme) {
+
+            if (theme === 'dark') {
+
+                document.body.classList.add('dark-theme');
+
+                // Show sun when dark theme is active
+                themeBtn.textContent = '☀️';
+
+                themeBtn.title = 'Switch to Light Theme';
+
+            } else {
+
+                document.body.classList.remove('dark-theme');
+
+                // Show moon when light theme is active
+                themeBtn.textContent = '🌙';
+
+                themeBtn.title = 'Switch to Dark Theme';
+            }
+
+            // Save selected theme
+            localStorage.setItem('theme', theme);
+        }
+
+
+        /* =====================================
+           TOGGLE DARK / LIGHT THEME
+        ===================================== */
+
+        themeBtn.addEventListener('click', function () {
+
+            if (document.body.classList.contains('dark-theme')) {
+
+                // Change to Light Theme
+                setTheme('light');
+
+            } else {
+
+                // Change to Dark Theme
+                setTheme('dark');
+            }
+        });
+
+
+        /* =====================================
+           LOAD SAVED THEME
+        ===================================== */
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+
+        setTheme(savedTheme);
+
+
+        /* =====================================
+           UPDATE SUMMARY COUNTERS
+        ===================================== */
+
+        function updateSummaryCounters() {
+
+            const total = tasks.length;
+
+            const completed =
+                tasks.filter(task => task.completed).length;
+
+            const pending = total - completed;
+
+            totalCountEl.textContent = total;
+            pendingCountEl.textContent = pending;
+            completedCountEl.textContent = completed;
+        }
+
+
+        /* =====================================
+           RENDER TASKS
+        ===================================== */
+
+        function renderTasks() {
+
+            todoList.innerHTML = '';
+
+            tasks.forEach((task, index) => {
+
+                const li = document.createElement('li');
+
+
+                /* Completed Task Styling */
+
+                if (task.completed) {
+                    li.classList.add('completed-row');
+                }
+
+
+                /* =================================
+                   EDIT MODE
+                ================================= */
+
+                if (task.isEditing) {
+
+                    li.innerHTML = `
+                        <input
+                            type="text"
+                            class="edit-input"
+                            value="${task.text}"
+                            id="edit-input-${index}"
+                        >
+
+                        <div class="action-btns">
+
+                            <button
+                                class="edit-btn"
+                                onclick="saveEdit(${index})"
+                            >
+                                Save
+                            </button>
+
+                            <button
+                                class="delete-btn"
+                                onclick="toggleEdit(${index})"
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+                    `;
+
+                }
+
+                /* =================================
+                   NORMAL MODE
+                ================================= */
+
+                else {
+
+                    li.innerHTML = `
+                        <div class="task-left-section">
+
+                            <input
+                                type="checkbox"
+                                class="done-checkbox"
+                                ${task.completed ? 'checked' : ''}
+                                onclick="toggleComplete(${index})"
+                                title="Mark as Done"
+                            >
+
+                            <span
+                                class="task-text
+                                ${task.completed ? 'completed' : ''}"
+                            >
+                                ${task.text}
+                            </span>
+
+                        </div>
+
+                        <div class="action-btns">
+
+                            <button
+                                class="edit-btn"
+                                onclick="toggleEdit(${index})"
+                            >
+                                Modify
+                            </button>
+
+                            <button
+                                class="delete-btn"
+                                onclick="deleteTask(${index})"
+                            >
+                                Delete
+                            </button>
+
+                        </div>
+                    `;
+                }
+
+
+                todoList.appendChild(li);
+            });
+
+
+            /* Update Statistics */
+
+            updateSummaryCounters();
+        }
+
+
+        /* =====================================
+           ADD TASK
+        ===================================== */
+
+        function addTask() {
+
+            const taskText = todoInput.value.trim();
+
+            if (taskText === '') {
+                return;
+            }
+
+
+            tasks.push({
+                text: taskText,
+                completed: false,
+                isEditing: false
+            });
+
+
+            todoInput.value = '';
+
+            saveTasks();
+
+            renderTasks();
+        }
+
+
+        /* =====================================
+           DELETE TASK
+        ===================================== */
+
+        function deleteTask(index) {
+
+            tasks.splice(index, 1);
+
+            saveTasks();
+
+            renderTasks();
+        }
+
+
+        /* =====================================
+           TOGGLE EDIT MODE
+        ===================================== */
+
+        function toggleEdit(index) {
+
+            tasks[index].isEditing =
+                !tasks[index].isEditing;
+
+            renderTasks();
+        }
+
+
+        /* =====================================
+           SAVE EDITED TASK
+        ===================================== */
+
+        function saveEdit(index) {
+
+            const editInput =
+                document.getElementById(`edit-input-${index}`);
+
+            const updatedText =
+                editInput.value.trim();
+
+
+            if (updatedText !== '') {
+
+                tasks[index].text = updatedText;
+
+                tasks[index].isEditing = false;
+
+                saveTasks();
+
+                renderTasks();
+            }
+        }
+
+
+        /* =====================================
+           TOGGLE TASK COMPLETION
+        ===================================== */
+
+        function toggleComplete(index) {
+
+            tasks[index].completed =
+                !tasks[index].completed;
+
+            saveTasks();
+
+            renderTasks();
+        }
+
+
+        /* =====================================
+           ADD BUTTON EVENT
+        ===================================== */
+
+        addBtn.addEventListener('click', addTask);
+
+
+        /* =====================================
+           ENTER KEY EVENT
+        ===================================== */
+
+        todoInput.addEventListener('keypress', (e) => {
+
+            if (e.key === 'Enter') {
+                addTask();
+            }
+
+        });
+
+
+        /* =====================================
+           INITIAL RENDER
+        ===================================== */
+
+        renderTasks();
+
+    </script>
+
+</body>
+</html>
