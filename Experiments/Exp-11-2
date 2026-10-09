@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Class Scheduler</title>
+
+<style>
+* {
+box-sizing: border-box;
+}
+
+body {
+font-family: Arial, sans-serif;
+background: #eef2ff;
+margin: 0;
+padding: 20px;
+color: #222;
+}
+
+.container {
+max-width: 750px;
+margin: 30px auto;
+}
+
+h1 {
+text-align: center;
+color: #3730a3;
+}
+
+.card {
+background: white;
+padding: 22px;
+margin: 18px 0;
+border-radius: 14px;
+box-shadow: 0 4px 12px #0001;
+}
+
+.current {
+border-left: 6px solid #16a34a;
+}
+
+.next {
+border-left: 6px solid #6366f1;
+}
+
+.countdown {
+font-size: 32px;
+font-weight: bold;
+color: #4338ca;
+text-align: center;
+margin: 20px 0;
+}
+
+.status {
+text-align: center;
+font-weight: bold;
+}
+
+#notification {
+display: none;
+background: #dcfce7;
+color: #166534;
+padding: 14px;
+border-radius: 8px;
+text-align: center;
+margin: 15px 0;
+}
+
+.schedule-item {
+padding: 12px;
+border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 500px) {
+body {
+padding: 10px;
+}
+
+.countdown {
+font-size: 25px;
+}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>Smart Class Scheduler</h1>
+
+<div id="notification"></div>
+
+<div class="card current">
+<h2>Current Class</h2>
+<div id="currentClass">Loading...</div>
+</div>
+
+<div class="card next">
+<h2>Next Class</h2>
+<div id="nextClass">Loading...</div>
+</div>
+
+<div class="card">
+<h2 class="status" id="status">Checking schedule...</h2>
+<div class="countdown" id="countdown">00:00:00</div>
+</div>
+
+<div class="card">
+<h2>Today's Schedule</h2>
+<div id="schedule"></div>
+</div>
+</div>
+
+<script>
+// 1. Store at least 5 classes
+const classes = [
+{
+subject: "Data Structures",
+faculty: "Prof. Sharma",
+room: "Room 101",
+start: "09:00",
+end: "10:00"
+},
+{
+subject: "Database Management",
+faculty: "Prof. Patil",
+room: "Room 202",
+start: "10:15",
+end: "11:15"
+},
+{
+subject: "Operating Systems",
+faculty: "Prof. Verma",
+room: "Room 103",
+start: "11:30",
+end: "12:30"
+},
+{
+subject: "Computer Networks",
+faculty: "Prof. Joshi",
+room: "Lab 2",
+start: "13:30",
+end: "14:12"
+},
+{
+subject: "Web Technology",
+faculty: "Prof. Deshmukh",
+room: "Lab 1",
+start: "14:12",
+end: "14:25"
+}
+];
+
+// Convert today's class time into a Date object
+function getDate(time) {
+const [hours, minutes] = time.split(":").map(Number);
+const date = new Date();
+date.setHours(hours, minutes, 0, 0);
+return date;
+}
+
+// 2. Display the schedule
+function displaySchedule() {
+document.getElementById("schedule").innerHTML =
+classes.map(c => `
+<div class="schedule-item">
+<strong>${c.subject}</strong><br>
+Faculty: ${c.faculty}<br>
+Room: ${c.room}<br>
+Time: ${c.start} - ${c.end}
+</div>
+`).join("");
+}
+
+// 3. Temporary notification using setTimeout()
+let notificationTimer;
+
+function showNotification(message) {
+const box = document.getElementById("notification");
+box.textContent = message;
+box.style.display = "block";
+
+clearTimeout(notificationTimer);
+
+notificationTimer = setTimeout(() => {
+box.style.display = "none";
+}, 4000);
+}
+
+let notifiedClasses = new Set();
+let previousClass = "";
+
+// 4. Update current class and countdown
+function updateScheduler() {
+const now = new Date();
+
+const index = classes.findIndex(c =>
+now >= getDate(c.start) &&
+now < getDate(c.end)
+);
+
+const nextIndex = classes.findIndex(c =>
+getDate(c.start) > now
+);
+
+const currentElement =
+document.getElementById("currentClass");
+const nextElement =
+document.getElementById("nextClass");
+const statusElement =
+document.getElementById("status");
+const countdownElement =
+document.getElementById("countdown");
+
+if (index !== -1) {
+const c = classes[index];
+
+currentElement.innerHTML = `
+<h3>${c.subject}</h3>
+Faculty: ${c.faculty}<br>
+Classroom: ${c.room}<br>
+Time: ${c.start} - ${c.end}
+`;
+
+statusElement.textContent =
+"Class in progress — time remaining";
+
+const remaining = getDate(c.end) - now;
+countdownElement.textContent = formatTime(remaining);
+
+if (previousClass !== c.subject) {
+if (previousClass !== "") {
+showNotification(
+"Now starting: " + c.subject
+);
+}
+
+previousClass = c.subject;
+}
+
+// Notify 5 minutes before class starts
+classes.forEach(item => {
+const startTime = getDate(item.start);
+const difference = startTime - now;
+
+if (
+difference > 0 &&
+difference <= 5 * 60 * 1000 &&
+!notifiedClasses.has(item.subject)
+) {
+showNotification(
+"Your class will start in 5 minutes: " +
+item.subject
+);
+notifiedClasses.add(item.subject);
+}
+});
+
+} else if (nextIndex !== -1) {
+const next = classes[nextIndex];
+
+currentElement.innerHTML =
+"No class is currently in progress.";
+
+nextElement.innerHTML = `
+<h3>${next.subject}</h3>
+Faculty: ${next.faculty}<br>
+Classroom: ${next.room}<br>
+Time: ${next.start} - ${next.end}
+`;
+
+statusElement.textContent =
+"Next class starts in";
+
+countdownElement.textContent =
+formatTime(getDate(next.start) - now);
+
+previousClass = "";
+} else {
+currentElement.innerHTML =
+"No class is currently in progress.";
+
+nextElement.innerHTML =
+"All classes have finished for today.";
+
+statusElement.textContent =
+"Schedule completed";
+
+countdownElement.textContent = "00:00:00";
+previousClass = "";
+}
+
+if (index !== -1 && nextIndex !== -1) {
+const next = classes[nextIndex];
+
+nextElement.innerHTML = `
+<h3>${next.subject}</h3>
+Faculty: ${next.faculty}<br>
+Classroom: ${next.room}<br>
+Time: ${next.start} - ${next.end}
+`;
+} else if (index !== -1) {
+nextElement.innerHTML =
+"No more classes scheduled today.";
+}
+}
+
+// 5. Format milliseconds as HH:MM:SS
+function formatTime(milliseconds) {
+const totalSeconds = Math.max(
+0, Math.floor(milliseconds / 1000)
+);
+
+const hours = Math.floor(totalSeconds / 3600);
+const minutes = Math.floor((totalSeconds % 3600) / 60);
+const seconds = totalSeconds % 60;
+
+return [hours, minutes, seconds]
+.map(n => String(n).padStart(2, "0"))
+.join(":");
+}
+
+// Initialize and automatically update every second
+displaySchedule();
+updateScheduler();
+setInterval(updateScheduler, 1000);
+</script>
+</body>
+</html>
