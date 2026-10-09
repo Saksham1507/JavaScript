@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Countdown Timer</title>
+    
+</head>
+<body>
+
+    <div class="timer-container">
+        <h2>Timer:</h2>
+        <div id="timer">10</div>
+    </div>
+
+    <script>
+        // Set the starting time
+        let timeLeft = 10;
+        const timerElement = document.getElementById('timer');
+
+        // Update the timer every 1 second (1000 milliseconds)
+        const countdown = setInterval(() => {
+            timeLeft--;
+            timerElement.textContent = timeLeft;
+
+            // When time reaches 0, stop the timer and show the alert
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                setTimeout(() => {
+                    alert("Timer has ended!");
+                }, 10); // Tiny delay so the UI updates to '0' before the alert blocks the screen
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>
